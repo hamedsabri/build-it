@@ -1,2 +1,3 @@
-# build-it
-Command tool to facilitate building CMake projects.
+# What is build-it?
+
+A command-line tool to facilitate building CMake projects.
