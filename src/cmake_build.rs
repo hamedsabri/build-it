@@ -1,5 +1,5 @@
 use std::io::{BufRead, BufReader, Write};
-use std::process::{Command, Stdio};
+use std::process::{Command, Stdio, exit};
 
 use super::app_context::*;
 use super::command_args::*;
@@ -69,7 +69,11 @@ fn run_command(cmd: &str, context: &AppContext) -> Result<(), std::io::Error> {
         }
     }
 
-    command.wait()?;
+    let status = command.wait()?;
+    if !status.success() {
+        exit(status.code().unwrap_or(1));
+    }
+
     Ok(())
 }
 
@@ -101,7 +105,10 @@ fn run_cmake(context: &AppContext) -> Result<(), Box<dyn Error>> {
 
             println!("{}", command_format.green());
 
-            run_command(&command_format, &context)?;
+            match run_command(&command_format, &context) {
+                Ok(_) => {},
+                Err(_) => exit(1),
+            }
         }
 
         if context.has_stage(Stage::Build) || context.has_stage(Stage::Install) {
@@ -118,7 +125,10 @@ fn run_cmake(context: &AppContext) -> Result<(), Box<dyn Error>> {
                 multiproc = multiproc
             );
 
-            run_command(&command_format, &context)?;
+            match run_command(&command_format, &context) {
+                Ok(_) => {},
+                Err(_) => exit(1),
+            }
 
             if context.has_stage(Stage::Build) {
                 let colored_build_variant_dirpath =
