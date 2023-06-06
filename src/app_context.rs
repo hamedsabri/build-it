@@ -42,7 +42,6 @@ impl AppContext {
                     UtilityHelper::fetch_project_name(),
                 ))
             })?;
-
         let project_name = match &project_name {
             Some(project_name) => project_name.clone(),
             None => String::from("Not found"),

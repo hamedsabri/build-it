@@ -27,7 +27,7 @@ impl UtilityHelper {
     // Deletes a directory and all its contents. Returns an error if the directory cannot be deleted.
     pub fn delete_directory(dir_path: &PathBuf) -> std::io::Result<()> {
         match fs::remove_dir_all(dir_path) {
-            Ok(()) => {}
+            Ok(_) => {}
             Err(e) => println!("Error deleting folder: {:?}", e),
         }
         Ok(())
@@ -38,7 +38,7 @@ impl UtilityHelper {
     pub fn create_new_directory(path: &PathBuf) -> std::io::Result<()> {
         if !path.exists() {
             match fs::create_dir_all(path) {
-                Ok(()) => {}
+                Ok(_) => {}
                 Err(e) => {
                     println!("Error creating directory {}: {}", path.display(), e);
                     return Err(e);

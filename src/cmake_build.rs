@@ -1,5 +1,5 @@
 use std::io::{BufRead, BufReader, Write};
-use std::process::{Command, Stdio, exit};
+use std::process::{exit, Command, Stdio};
 
 use super::app_context::*;
 use super::command_args::*;
@@ -82,7 +82,7 @@ fn run_cmake(context: &AppContext) -> Result<(), Box<dyn Error>> {
     let build_variant_dirpath = &context.build_dir.join(context.variant.as_str());
     let install_variant_dirpath = &context.install_dir.join(context.variant.as_str());
 
-    UtilityHelper::current_working_directory(&build_variant_dirpath, || {
+    return UtilityHelper::current_working_directory(&build_variant_dirpath, || {
         if context.has_stage(Stage::Configure) {
             let command_format = format!(
                 "cmake \
@@ -106,7 +106,7 @@ fn run_cmake(context: &AppContext) -> Result<(), Box<dyn Error>> {
             println!("{}", command_format.green());
 
             match run_command(&command_format, &context) {
-                Ok(_) => {},
+                Ok(_) => {}
                 Err(_) => exit(1),
             }
         }
@@ -126,7 +126,7 @@ fn run_cmake(context: &AppContext) -> Result<(), Box<dyn Error>> {
             );
 
             match run_command(&command_format, &context) {
-                Ok(_) => {},
+                Ok(_) => {}
                 Err(_) => exit(1),
             }
 
@@ -148,14 +148,12 @@ fn run_cmake(context: &AppContext) -> Result<(), Box<dyn Error>> {
         }
 
         Ok(())
-    })?;
-
-    Ok(())
+    });
 }
 
 // This is the entry point function for building a cmake project.
 pub fn build_project(context: &AppContext) -> Result<(), Box<dyn Error>> {
-    UtilityHelper::current_working_directory(&context.project_location, || {
+    return UtilityHelper::current_working_directory(&context.project_location, || {
         if context.has_stage(Stage::Clean) {
             UtilityHelper::delete_directory(&context.build_dir)?;
         }
@@ -175,7 +173,5 @@ pub fn build_project(context: &AppContext) -> Result<(), Box<dyn Error>> {
         run_cmake(&context)?;
 
         Ok(())
-    })?;
-
-    Ok(())
+    });
 }
